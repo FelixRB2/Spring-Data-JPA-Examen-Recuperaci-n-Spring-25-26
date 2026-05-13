@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.Curso.Service.cursosService;
 import com.example.Curso.entity.Aulas;
 import com.example.Curso.entity.Cursos;
 import com.example.Curso.entity.Profesores;
@@ -26,9 +28,11 @@ public class cursosController {
     private final cursosRepository cursosRepository;
     /*private final profesoresRepository profesoresRepository;
     private final aulasRepository aulasRepository;*/
+    private final cursosService cursosService;
 
-    public cursosController(cursosRepository cursosRepository) {
+    public cursosController(cursosRepository cursosRepository, cursosService cursosService) {
         this.cursosRepository = cursosRepository;
+        this.cursosService = cursosService;
     }
 
     /*public profesoresController(profesoresRepository profesoresRepository) {
@@ -65,6 +69,19 @@ public class cursosController {
     }
     cursosRepository.deleteById(id);
     return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/cursos/{id}")
+    public ResponseEntity<?> actualizarProfesor(
+            @PathVariable String id,
+            @RequestBody String profesorId) {
+
+        try {
+            Cursos actualizado = cursosService.actualizarProfesor(id, profesorId);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     
